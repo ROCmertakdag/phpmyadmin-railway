@@ -1,16 +1,11 @@
-# Use phpMyAdmin official FPM image
 FROM phpmyadmin/phpmyadmin:latest
 
-# Install supervisor to manage php-fpm
-RUN apt-get update && \
-    apt-get install -y supervisor && \
-    apt-get clean
+# Install any extras if needed
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy supervisord config
-COPY supervisord.conf /etc/supervisor/supervisord.conf
+# Copy custom entrypoint
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
 
-# Expose port 80
-EXPOSE 80
-
-# Start supervisor
-CMD ["/usr/bin/supervisord", "-n", "-c", "/etc/supervisor/supervisord.conf"]
+ENTRYPOINT ["/docker-entrypoint.sh"]
