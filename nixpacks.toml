@@ -1,0 +1,18 @@
+[phases.setup]
+# Install PHP + extensions
+nixPkgs = [
+  "php82",
+  "php82Extensions.pdo_mysql",
+  "php82Extensions.mbstring",
+  "php82Extensions.zip"
+]
+
+[phases.build]
+# Optional: install composer dependencies
+cmds = [
+  "composer install --no-dev --optimize-autoloader || true"
+]
+
+[start]
+# Use PHP built-in server to serve phpMyAdmin
+cmd = "php -S 0.0.0.0:$PORT -t ."
