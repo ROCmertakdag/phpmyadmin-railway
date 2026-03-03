@@ -1,8 +1,9 @@
 FROM phpmyadmin/phpmyadmin:latest
 
-# Install any extras if needed
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+# Fix: create the missing secret config that Debian's phpMyAdmin expects
+RUN mkdir -p /etc/phpmyadmin && \
+    echo '<?php $cfg["blowfish_secret"] = "r4!Xk9#mP2vLqZnYwUdEhCjTsAbFgOi8";' \
+    > /etc/phpmyadmin/config.secret.inc.php
 
 # Copy custom entrypoint
 COPY docker-entrypoint.sh /docker-entrypoint.sh
