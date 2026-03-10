@@ -17,9 +17,9 @@ if [ ! -f /etc/phpmyadmin/config.secret.inc.php ]; then
     echo "<?php \$cfg['blowfish_secret'] = '$SECRET';" > /etc/phpmyadmin/config.secret.inc.php
 fi
 
-# Patch Apache to listen on the Railway-assigned port
-sed -i "s/Listen 80/Listen $PORT/" /etc/apache2/ports.conf
-sed -i "s/<VirtualHost \*:80>/<VirtualHost *:$PORT>/" /etc/apache2/sites-enabled/*.conf
+# Set Apache to listen on the Railway-assigned port (restart-safe)
+echo "Listen $PORT" > /etc/apache2/ports.conf
+sed -i "s/<VirtualHost \*:[0-9]*>/<VirtualHost *:$PORT>/" /etc/apache2/sites-enabled/*.conf
 
 # Start Apache foreground
 exec apache2-foreground
